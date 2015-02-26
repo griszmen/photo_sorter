@@ -31,17 +31,29 @@ namespace WindowsFormsApplication1
                 string[] files = Directory.GetFiles(path, pattern, SearchOption.AllDirectories);
                 foreach (string file in files)
                 {
+                    string filename = Path.GetFileName(file);
+                    string filename_dir = Path.GetDirectoryName(file);
                     richTextBox1.Text = richTextBox1.Text + file + "\n";
-                    DateTime creationDate = File.GetCreationTime(file);
+                    DateTime creationDate = File.GetLastWriteTime(file);
                     int monthNumber = creationDate.Month;
-                    richTextBox1.Text = richTextBox1.Text + creationDate + " " + monthNumber + "\n";
-                    
-                    string newPath = path + "/" + monthNumber;
-                    if (!Directory.Exists(newPath))
+                    string newPath = path + "\\" + monthNumber;
+                    string sourceFile = Path.Combine(filename_dir, filename);
+                    string destFile = Path.Combine(newPath, filename);
+                    MessageBox.Show(filename_dir);
+                    MessageBox.Show(sourceFile);
+                    MessageBox.Show(destFile);
+                    richTextBox1.Text = richTextBox1.Text + creationDate + " " + monthNumber + " newpath: " + newPath + " sourceFile: " + sourceFile + " destfile: " + destFile +  "\n";                   
+                   
+                     if (!Directory.Exists(newPath))
                     {
                         Directory.CreateDirectory(newPath);
-                        File.Copy(Path.Combine(path,file), Path.Combine(newPath,file));
                     }
+
+                     string createdFile = newPath + "\\" + filename;
+                     if (!File.Exists(createdFile))
+                     {
+                         File.Copy(sourceFile, destFile);
+                     }                                            
 
                 }
 
